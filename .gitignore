@@ -1,0 +1,11 @@
+
+# This is a ConfigMap with a Maven settings.xml file for Artifactory.
+# Contains secrets, so ignored. 
+mvn-settings-cm.yaml 
+
+# This contains a .dockerconfigjson file as a Secret resource.
+# Contains secrets, so ignored. 
+dockerconfigjson-secret.yaml
+
+gitconfig
+id_rsa
