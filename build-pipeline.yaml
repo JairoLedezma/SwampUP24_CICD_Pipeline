@@ -8,13 +8,105 @@ spec:
       name: GIT_BRANCH
       type: string
   tasks:
-    - name: maven
+    # - name: jfrog-push-docker-image
+    #   params:
+    #     - name: SCRIPT
+    #       value: |-
+    #         jf dp nvsconsulting.jfrog.io/cicd-demo-container-images/swampup23/jfrog-demo:$(tasks.generate-build-id.results.build-id) --build-name=tekton-build --build-number=$(tasks.generate-build-id.results.build-id)
+    #   runAfter:
+    #     - xray-scan-docker
+    #   taskRef:
+    #     kind: Task
+    #     name: jfrog-cli
+    #   workspaces:
+    #     - name: source
+    #       workspace: scratch-space
+    #     - name: jfrog-apikey
+    #       workspace: jfrog-apikey
+    #     - name: settings-xml
+    #       workspace: settings-xml
+    # - name: xray-scan-docker
+    #   params:
+    #     - name: SCRIPT
+    #       value: |-
+    #         jf docker scan nvsconsulting.jfrog.io/cicd-demo-container-images/swampup23/jfrog-demo:$(tasks.generate-build-id.results.build-id)
+    #   runAfter:
+    #     - buildah
+    #   taskRef:
+    #     kind: Task
+    #     name: jfrog-cli
+    #   workspaces:
+    #     - name: source
+    #       workspace: scratch-space
+    #     - name: jfrog-apikey
+    #       workspace: jfrog-apikey
+    #     - name: settings-xml
+    #       workspace: settings-xml
+    - name: maven-deploy
       params:
         - name: MAVEN_IMAGE
           value: 'docker.io/library/maven:3.9.1-eclipse-temurin'
         - name: GOALS
           value:
             - deploy
+        - name: MAVEN_MIRROR_URL
+          value: ''
+        - name: SERVER_USER
+          value: ''
+        - name: SERVER_PASSWORD
+          value: ''
+        - name: PROXY_USER
+          value: ''
+        - name: PROXY_PASSWORD
+          value: ''
+        - name: PROXY_PORT
+          value: ''
+        - name: PROXY_HOST
+          value: ''
+        - name: PROXY_NON_PROXY_HOSTS
+          value: ''
+        - name: PROXY_PROTOCOL
+          value: http
+        - name: CONTEXT_DIR
+          value: .
+      runAfter:
+        - xray-scan
+      taskRef:
+        kind: ClusterTask
+        name: maven
+      workspaces:
+        - name: source
+          workspace: scratch-space
+        - name: maven-settings
+          workspace: settings-xml
+    - name: xray-scan
+      params:
+        - name: SCRIPT
+          value: |-
+            pwd
+            ls -lath
+            ls -lath ./target
+            jf scan ./target/*.jar
+      runAfter:
+        - maven-package
+      taskRef:
+        kind: Task
+        name: jfrog-cli
+      workspaces:
+        - name: source
+          workspace: scratch-space
+        - name: jfrog-apikey
+          workspace: jfrog-apikey
+        - name: settings-xml
+          workspace: settings-xml
+    - name: maven-package
+      params:
+        - name: MAVEN_IMAGE
+          value: 'docker.io/library/maven:3.9.1-eclipse-temurin'
+        - name: GOALS
+          value:
+            - clean
+            - package
         - name: MAVEN_MIRROR_URL
           value: ''
         - name: SERVER_USER
@@ -113,7 +205,7 @@ spec:
         - name: SKIP_PUSH
           value: 'false'
       runAfter:
-        - maven
+        - maven-deploy
       taskRef:
         kind: ClusterTask
         name: buildah
@@ -144,13 +236,9 @@ spec:
       taskRef:
         kind: Task
         name: generate-build-id
-      workspaces:
-        - name: source
-          workspace: scratch-space
-        - name: ssh-directory
-          workspace: git-ssh-key
   workspaces:
     - name: scratch-space
     - name: dockerconfig
     - name: settings-xml
     - name: git-ssh-key
+    - name: jfrog-apikey

@@ -6,7 +6,7 @@ metadata:
 spec:
   params:
     - description: The docker image to deploy
-      name: DOCKER_IMAGE
+      name: DOCKER_TAG
       type: string
   tasks:
     - name: git-clone
@@ -56,7 +56,7 @@ spec:
       params:
         - name: SCRIPT
           value: >-
-            yq -i e ".images[0].newTag |=\"$(params.DOCKER_IMAGE)\""
+            yq -i e ".images[0].newTag |=\"$(params.DOCKER_TAG)\""
             overlays/dev/kustomization.yml
         - name: image
           value: >-
@@ -87,7 +87,7 @@ spec:
             git config --global --add safe.directory /workspace/source && \
             git checkout main && \
             git add --all && \
-            git commit -m "Bump release version to $(params.DOCKER_IMAGE)" && \
+            git commit -m "Bump release version to $(params.DOCKER_TAG)" && \
             eval `ssh-agent -s` && \
             ssh-add ~/.ssh/id_rsa && \
             git push -u origin main

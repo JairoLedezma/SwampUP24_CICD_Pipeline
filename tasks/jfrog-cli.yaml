@@ -1,0 +1,52 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: jfrog-cli
+spec:
+  description: >-
+    This task will run any  jfrog cli command.
+  params:
+    - description: The script to run
+      name: SCRIPT
+      type: string
+      default: jf -v
+    - description: JFrog access token secret. Must have a key named "accessToken" with the value being the JFrog access token.
+      name: ACCESS_TOKEN
+      default: jfrog-secret
+  results:
+    - description: Current timestamp
+      name: timestamp
+      type: string
+    - description: ID of the current build
+      name: build-id
+      type: string
+  steps:
+    - image: >-
+        releases-docker.jfrog.io/jfrog/jfrog-cli-full-v2-jf
+      name: jfrog-cli
+      resources: {}
+      # env:
+      #   - name: jf_api_token
+      #     valueFrom:
+      #       secretKeyRef:
+      #         name: $(params.ACCESS_TOKEN)
+      #         key: accessToken
+      script: |
+        #!/usr/bin/env bash
+        set -e
+        # set +x
+        token=$(cat $(workspaces.jfrog-apikey.path)/accessToken)
+        jf config add nvsconsulting --access-token $token --user philip@nvsconsulting.io \
+          --url https://nvsconsulting.jfrog.io/
+        jf mvnc --repo-resolve-releases dev-demo-libs-releases --repo-resolve-snapshots dev-demo-libs-snapshot
+        # set -x 
+        $(params.SCRIPT)
+      workingDir: $(workspaces.source.path)
+  workspaces:
+    - description: A workspace that contains the file which needs to be altered.
+      name: source
+    - description: JFrog access token secret. Must have a key named "accessToken" with the value being the JFrog access token.
+      name: jfrog-apikey
+    - description: Maven settings.xml 
+      name: settings-xml
+      optional: true
