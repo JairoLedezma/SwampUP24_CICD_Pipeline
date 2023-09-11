@@ -9,3 +9,4 @@ dockerconfigjson-secret.yaml
 
 gitconfig
 id_rsa
+jfrog-secret.yaml
