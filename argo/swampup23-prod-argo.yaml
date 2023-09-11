@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: swampup23-demo-prod
+  namespace: openshift-gitops
+spec:
+  destination:
+    namespace: swampup-prod
+    server: 'https://kubernetes.default.svc'
+  project: default
+  source:
+    path: overlays/dev
+    repoURL: 'git@github.com:philipfoster/SwampUP23_Demo_Deployment_Files.git'
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      selfHeal: true
