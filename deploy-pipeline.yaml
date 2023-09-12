@@ -73,7 +73,7 @@ spec:
       workspaces:
         - name: source
           workspace: manifests
-    - name: deploy-to-dev
+    - name: deploy
       params:
         - name: BASE_IMAGE
           value: >-

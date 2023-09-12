@@ -13,13 +13,6 @@ spec:
     - description: JFrog access token secret. Must have a key named "accessToken" with the value being the JFrog access token.
       name: ACCESS_TOKEN
       default: jfrog-secret
-  results:
-    - description: Current timestamp
-      name: timestamp
-      type: string
-    - description: ID of the current build
-      name: build-id
-      type: string
   steps:
     - image: >-
         releases-docker.jfrog.io/jfrog/jfrog-cli-full-v2-jf
