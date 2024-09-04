@@ -1,16 +1,16 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: swampup23-demo-prod
+  name: swampup24-demo-test
   namespace: openshift-gitops
 spec:
   destination:
-    namespace: swampup-prod
+    namespace: swampup-test
     server: 'https://kubernetes.default.svc'
   project: default
   source:
-    path: overlays/prod
-    repoURL: 'git@github.com:philipfoster/SwampUP23_Demo_Deployment_Files.git'
+    path: overlays/test
+    repoURL: 'git@github.com:JairoLedezma/SwampUP24_Demo_Deployment_Files.gitt'
     targetRevision: HEAD
   syncPolicy:
     automated:

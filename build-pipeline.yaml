@@ -140,7 +140,7 @@ spec:
     - name: git-clone
       params:
         - name: url
-          value: 'git@github.com:philipfoster/JFrog_CICD_Demo.git'
+          value: 'git@github.com:JairoLedezma/JFrog_CICD_Demo.git'
         - name: revision
           value: $(params.GIT_BRANCH)
         - name: refspec
@@ -184,7 +184,7 @@ spec:
       params:
         - name: IMAGE
           value: >-
-            nvsconsulting.jfrog.io/cicd-demo-container-images/swampup23/jfrog-demo:$(tasks.generate-build-id.results.build-id)
+            https://nvsswampup.jfrog.io/artifactory/swamp-up-24-docker/jfrog-demo:$(tasks.generate-build-id.results.build-id)
         - name: BUILDER_IMAGE
           value: >-
             registry.redhat.io/rhel8/buildah@sha256:ac0b8714cc260c94435cab46fe41b3de0ccbc3d93e38c395fa9d52ac49e521fe

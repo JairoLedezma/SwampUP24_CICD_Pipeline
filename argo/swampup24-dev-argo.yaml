@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: swampup23-demo-dev
+  name: swampup24-demo-dev
   namespace: openshift-gitops
 spec:
   destination:
@@ -10,7 +10,7 @@ spec:
   project: default
   source:
     path: overlays/dev
-    repoURL: 'git@github.com:philipfoster/SwampUP23_Demo_Deployment_Files.git'
+    repoURL: 'git@github.com:JairoLedezma/SwampUP24_Demo_Deployment_Files.git'
     targetRevision: HEAD
   syncPolicy:
     automated:
